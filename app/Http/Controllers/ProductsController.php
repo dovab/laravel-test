@@ -39,10 +39,12 @@ class ProductsController extends Controller
     {
         $validated = $request->validate([
             "name" => ["required", "unique:products", "max:64"],
+            "description" => ["required"],
         ]);
 
         $product = new Product();
         $product->name = $validated["name"];
+        $product->description = $validated["description"];
         $product->save();
 
         return redirect("/products")->with("status", "Product saved");
@@ -85,10 +87,12 @@ class ProductsController extends Controller
     {
         $validated = $request->validate([
             "name" => ["required", "unique:products", "max:64"],
+            "description" => ["required"],
         ]);
 
         $product = Product::find($id);
         $product->name = $validated["name"];
+        $product->description = $validated["description"];
         $product->save();
 
         return redirect("/products")->with("status", "Product saved");

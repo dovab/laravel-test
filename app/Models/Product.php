@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-
     /**
      * The attributes that are mass assignable.
      *
@@ -14,5 +13,6 @@ class Product extends Model
      */
     protected $fillable = [
         'name',
+        'description',
     ];
 }
