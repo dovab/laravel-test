@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
 {
@@ -14,7 +14,9 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        return view("products.index");
+        $products = Product::all();
+
+        return view("products.index")->with("products", $products);
     }
 
     /**
@@ -36,58 +38,73 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'unique:products', 'max:255'],
+            "name" => ["required", "unique:products", "max:64"],
         ]);
 
-        DB::insert("INSERT INTO products (name) VALUES ('".$validated['name']."')");
+        $product = new Product();
+        $product->name = $validated["name"];
+        $product->save();
 
-        return redirect('/products')->with('status', 'Product saved');
+        return redirect("/products")->with("status", "Product saved");
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
-        //
+        $product = Product::find($id);
+
+        return view("products.show")->with("product", $product);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(int $id)
     {
-        //
+        $product = Product::find($id);
+
+        return view("products.edit")->with("product", $product);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
-        //
+        $validated = $request->validate([
+            "name" => ["required", "unique:products", "max:64"],
+        ]);
+
+        $product = Product::find($id);
+        $product->name = $validated["name"];
+        $product->save();
+
+        return redirect("/products")->with("status", "Product saved");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        DB::delete("DELETE FROM products WHERE id = ".$id);
+        $product = Product::find($id);
+        $product->delete();
 
-        return redirect('/products')->with('status', 'Product was deleted');
+        return redirect("/products")->with("status", "Product {$product->name} was deleted");
     }
 }

@@ -5,12 +5,12 @@
 @endsection
 
 @section("contents")
-    <h2>New product</h2>
+    <h1>Create product</h1>
+
     <form action="{{route("products.store")}}" method="POST">
-        @csrf
-        <input type="text" name="name" placeholder="name" /><br />
-        <textarea name="description" placeholder="description"></textarea><br />
-        <input type="text" name="tags" placeholder="tags" /><br />
-        <button type="submit">Submit</button>
+        @include("products.form-fields")
+
+        <button type="submit" class="btn btn-primary">Create product</button>
+        <a class="btn btn-secondary" href="{{route('products.index')}}">Cancel</a>
     </form>
 @endsection
