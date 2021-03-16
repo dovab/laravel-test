@@ -3,10 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
+    /**
+     * @var ProductService
+     */
+    private ProductService $productService;
+
+    /**
+     * ProductsController constructor.
+     */
+    public function __construct() {
+        $this->productService = new ProductService();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +27,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = $this->productService->list();
 
         return view("products.index")->with("products", $products);
     }
@@ -42,12 +55,9 @@ class ProductsController extends Controller
             "description" => ["required"],
         ]);
 
-        $product = new Product();
-        $product->name = $validated["name"];
-        $product->description = $validated["description"];
-        $product->save();
+        $product = $this->productService->create($validated);
 
-        return redirect("/products")->with("status", "Product saved");
+        return redirect("/products")->with("status", "Product {$product->name} saved");
     }
 
     /**
@@ -58,7 +68,7 @@ class ProductsController extends Controller
      */
     public function show(int $id)
     {
-        $product = Product::find($id);
+        $product = $this->productService->get($id);
 
         return view("products.show")->with("product", $product);
     }
@@ -71,7 +81,7 @@ class ProductsController extends Controller
      */
     public function edit(int $id)
     {
-        $product = Product::find($id);
+        $product = $this->productService->get($id);
 
         return view("products.edit")->with("product", $product);
     }
@@ -90,12 +100,9 @@ class ProductsController extends Controller
             "description" => ["required"],
         ]);
 
-        $product = Product::find($id);
-        $product->name = $validated["name"];
-        $product->description = $validated["description"];
-        $product->save();
+        $product = $this->productService->update($id, $validated);
 
-        return redirect("/products")->with("status", "Product saved");
+        return redirect("/products")->with("status", "Product {$product->name} saved");
     }
 
     /**
@@ -106,8 +113,7 @@ class ProductsController extends Controller
      */
     public function destroy(int $id)
     {
-        $product = Product::find($id);
-        $product->delete();
+        $product = $this->productService->delete($id);
 
         return redirect("/products")->with("status", "Product {$product->name} was deleted");
     }
