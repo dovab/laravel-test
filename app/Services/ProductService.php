@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\ProductCreated;
 use App\Models\Product;
 use App\Models\Tag;
 
@@ -37,6 +38,8 @@ class ProductService
         $product->save();
 
         $this->processTags($product, explode(",", $values['tags']));
+
+        ProductCreated::dispatch($product);
 
         return $product;
     }
