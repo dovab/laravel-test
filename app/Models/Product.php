@@ -15,4 +15,14 @@ class Product extends Model
         'name',
         'description',
     ];
+
+    /**
+     * The product tags
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'products_tags', 'product_id', 'tag_id');
+    }
 }

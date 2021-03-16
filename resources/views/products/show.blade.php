@@ -17,7 +17,11 @@
     </div>
     <div class="row mt-2">
         <div class="col-sm-6">Tags</div>
-        <div class="col-sm-6">{{$product->tags}}</div>
+        <div class="col-sm-6">
+            @foreach ($product->tags as $tag)
+                {{$tag->tag}}<br />
+            @endforeach
+        </div>
     </div>
 
     <div class="row mt-5">

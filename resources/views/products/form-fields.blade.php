@@ -5,10 +5,19 @@
 </div>
 <div class="form-group">
     <label for="description">Description</label>
-    <textarea name="description" placeholder="Description" id="description" class="form-control"></textarea>
+    <textarea name="description" placeholder="Description" id="description" class="form-control">{{isset($product) ? $product->description : ''}}</textarea>
 </div>
 <div class="form-group">
     <label for="tags">Tags</label>
-    <input type="text" id="tags" name="tags" placeholder="Tags" class="form-control" value="" />
+    @php
+        $tags = '';
+        if (isset($product) && count($product->tags) > 0) {
+            foreach($product->tags as $tag) {
+                $tags .= $tag->tag.', ';
+            }
+            $tags = trim($tags, ', ');
+        }
+    @endphp
+    <input type="text" id="tags" name="tags" placeholder="Tags" class="form-control" value="{{$tags}}" />
 </div>
 

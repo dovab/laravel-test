@@ -53,6 +53,7 @@ class ProductsController extends Controller
         $validated = $request->validate([
             "name" => ["required", "unique:products", "max:64"],
             "description" => ["required"],
+            "tags" => ["required"],
         ]);
 
         $product = $this->productService->create($validated);
@@ -98,6 +99,7 @@ class ProductsController extends Controller
         $validated = $request->validate([
             "name" => ["required", "unique:products", "max:64"],
             "description" => ["required"],
+            "tags" => ["required"],
         ]);
 
         $product = $this->productService->update($id, $validated);

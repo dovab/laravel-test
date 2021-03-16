@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\Tag;
 
 class ProductService
 {
@@ -35,6 +36,8 @@ class ProductService
         $product->description = $values["description"];
         $product->save();
 
+        $this->processTags($product, explode(",", $values['tags']));
+
         return $product;
     }
 
@@ -51,6 +54,8 @@ class ProductService
         $product->description = $values["description"];
         $product->save();
 
+        $this->processTags($product, explode(",", $values['tags']));
+
         return $product;
     }
 
@@ -65,5 +70,35 @@ class ProductService
         $product->delete();
 
         return $product;
+    }
+
+    /**
+     * @param Product $product
+     * @param array $tags
+     */
+    private function processTags(Product $product, array $tags) {
+        // Remove all tags
+        $product->tags()->detach();
+
+        // Add the tags sent in this request
+        foreach($tags as $tag) {
+            // Clean the tag
+            $tag = trim($tag);
+
+            // Skip empty strings as tag
+            if ('' === $tag) {
+                continue;
+            }
+
+            // Check if the tag exists
+            $tagModel = Tag::where('tag', $tag)->get()->first();
+            if (null === $tagModel) {
+                $tagModel = new Tag();
+                $tagModel->tag = $tag;
+                $tagModel->save();
+            }
+
+            $product->tags()->attach($tagModel->id);
+        }
     }
 }
